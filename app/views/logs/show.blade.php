@@ -1,0 +1,1 @@
+/home/felipe/laravel/miblogapp/app/views/logs/show.blade.php
