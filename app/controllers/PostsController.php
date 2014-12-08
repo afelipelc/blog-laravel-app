@@ -12,6 +12,12 @@ class PostsController extends \BaseController {
 	{
 		$posts = Post::all();
 		$this->layout->content = View::make('posts.index', compact('posts'));
+
+		/*return Response::json( array (
+			'error' => false,
+			'posts' => $posts->toArray()),
+			200
+		)->header('Content-Type', "application/json");*/
 	}
 
 	/**
@@ -20,7 +26,7 @@ class PostsController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function create(Post $post)
+	public function create()
 	{
 		$this->layout->content = View::make('posts.create', compact('post'));
 	}
@@ -33,7 +39,12 @@ class PostsController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+		//almacenar el nuevo Post
+		$input = Input::all();
+		$input['user_id'] = 1; //autor temporal
+		Post::create( $input );
+	 
+		return Redirect::route('posts.index')->with('message', 'El nuevo Post se ha creado');
 	}
 
 	/**
@@ -46,6 +57,12 @@ class PostsController extends \BaseController {
 	public function show(Post $post)
 	{
 		$this->layout->content = View::make('posts.show', compact('post'));
+		
+		/*return Response::json( array (
+			'error' => false,
+			'posts' => $post->toArray()),
+			200
+		);*/
 	}
 
 	/**
@@ -64,22 +81,24 @@ class PostsController extends \BaseController {
 	 * Update the specified resource in storage.
 	 * PUT /posts/{id}
 	 *
-	 * @param  int  $id
+	 * @param  Post  $post
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Post $post)
 	{
-		//
+		$input = array_except(Input::all(), '_method');
+		$post->update($input);
+		return Redirect::route('posts.show', $post->id)->with('message', 'Post actualizado.');
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 * DELETE /posts/{id}
 	 *
-	 * @param  int  $id
+	 * @param  Post  $post
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Post $post)
 	{
 		//
 	}

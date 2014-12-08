@@ -16,23 +16,30 @@ class CommentsController extends \BaseController {
 	/**
 	 * Show the form for creating a new resource.
 	 * GET /comments/create
-	 *
+	 * @param  Post  $post
 	 * @return Response
 	 */
-	public function create()
+	public function create(Post $post)
 	{
-		//
+
+		$this->layout->content = View::make('comments.create', compact('post'));
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 * POST /comments
 	 *
+	 * @param  Post  $post
 	 * @return Response
 	 */
-	public function store()
+	public function store(Post  $post)
 	{
-		//
+		$input = Input::all();
+		$input['post_id'] = $post->id;
+		$input['user_id'] = 1;
+		Comment::create( $input );
+	 
+		return Redirect::route('posts.show', $post->id)->with('Comentario guardado.');
 	}
 
 	/**
@@ -75,12 +82,14 @@ class CommentsController extends \BaseController {
 	 * Remove the specified resource from storage.
 	 * DELETE /comments/{id}
 	 *
-	 * @param  int  $id
+	 * @param  Post  $post
+	 * @param  Comment  $comment
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Post $post, Comment $comment)
 	{
-		//
+		$comment->delete();
+		return Redirect::route('posts.show', $post->id)->with('message', 'Comentario eliminado.');
 	}
 
 }

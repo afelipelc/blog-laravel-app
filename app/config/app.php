@@ -78,7 +78,7 @@ return array(
 	|
 	*/
 
-	'key' => 'YourSecretKey!!!',
+	'key' => md5('AFelipe Key'),
 
 	'cipher' => MCRYPT_RIJNDAEL_128,
 

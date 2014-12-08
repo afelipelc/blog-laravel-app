@@ -1,0 +1,23 @@
+@section('main')
+{{ Form::open(array('url' => 'login','class'=>'form-signin','role'=>'form')) }}
+  <!-- Login Form from: http://getbootstrap.com/examples/signin/ -->
+  <h2 class="form-signin-heading">Ingresar</h2>
+  <!-- if there are login errors, show them here -->
+  <p>
+    {{ $errors->first('email') }}
+    {{ $errors->first('password') }}
+  </p>
+
+  {{ Form::label('username', 'Nombre de usuario',array('class'=>'sr-only')) }}
+  {{ Form::text('username', null, array('class'=>'form-control', 'placeholder'=>'ej. afelipe', 'required'=>'required', 'autofocus'=>'autofocus')) }}
+  {{ Form::label('password', 'Password',array('class'=>'sr-only')) }}
+  {{ Form::password('password', array('class'=>'form-control', 'placeholder'=>'******', 'required'=>'required')) }}
+  <div class="checkbox">
+  <!-- changed 'expire_on_close' => false to true on config/session.php -->
+    <label>
+      {{ Form::checkbox('rememberme', true) }} No cerrar sesión
+    </label>
+  </div>
+  {{ Form::submit('Ingresar',array('class'=>'btn btn-lg btn-primary btn-block')) }}
+{{ Form::close() }}
+@stop

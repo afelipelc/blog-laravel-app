@@ -15,16 +15,56 @@ Route::get('/', function()
 {
 	return View::make('hello');
 });
-
-# si queremos que al ingresar por ejemplo a /post/1
-# automáticamente nos retorne el objeto sin tener que hacer consultas dentro de la acción para obtener el objeto correspondiente
-# se puede configurar la ruta para que lo haga automáticamente
-Route::model('posts', 'Post');
-Route::bind('posts', function($value, $route) {
-  return Post::whereId($value)->first();
+/*
+Route::get('/', function ()
+{
+    return Redirect::route('posts.index');
 });
+*/
 
-Route::resource("posts", "PostsController");
-Route::resource("users", "UsersController");
-Route::resource("comments", "CommentsController");
-Route::resource("logs", "LogsController");
+Route::get('login', array('uses' => 'HomeController@showLogin'));
+
+// route to process the form
+Route::post('login', array('uses' => 'HomeController@doLogin'));
+
+Route::get('logout', array('uses' => 'HomeController@doLogout'));
+
+/*
+Route::get('/authtest', array('before' => 'auth.basic', function()
+{
+    //return View::make('hello');
+  return Redirect::route('posts.index');
+}));*/
+
+//proteger rutas
+Route::group(array('before' => 'auth'), function()
+{
+  # si queremos que al ingresar por ejemplo a /post/1
+  # automáticamente nos retorne el objeto sin tener que hacer consultas dentro de la acción para obtener el objeto correspondiente
+  # se puede configurar la ruta para que lo haga automáticamente
+  Route::model('posts', 'Post');
+  Route::model('comments', 'Comment');
+  Route::bind('posts', function($value, $route) {
+    return Post::whereId($value)->first();
+  });
+  Route::bind('comments', function($value, $route) {
+    return Comment::whereId($value)->first();
+  });
+
+  Route::resource("posts", "PostsController");
+  Route::resource('posts.comments', 'CommentsController');
+  Route::resource("comments", "CommentsController");
+  Route::resource("users", "UsersController");
+  Route::resource("logs", "LogsController");
+  
+}); //fin protección de rutas
+
+
+
+  Route::resource("apiposts", "ApipostsController");
+  Route::group(array('prefix' => 'api/v1'), function()
+  {
+      Route::resource('posts', 'ApipostsController');
+      Route::resource('posts.comments', 'ApicommentsController');
+  });
+
